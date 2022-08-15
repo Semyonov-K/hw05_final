@@ -25,7 +25,7 @@ class Post(models.Model):
         'Картинка',
         upload_to='posts/',
         blank=True
-    )  
+    )
 
     class Meta:
         ordering = ('-pub_date',)
@@ -42,6 +42,7 @@ class Group(models.Model):
     def __str__(self):
         return self.title
 
+
 class Comment(models.Model):
     text = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
@@ -50,9 +51,9 @@ class Comment(models.Model):
                                related_name='comments',
                                )
     post = models.ForeignKey(Post,
-                            on_delete=models.CASCADE,
-                            related_name='comments',
-                            )
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
 
     class Meta:
         ordering = ('-created',)
@@ -60,11 +61,12 @@ class Comment(models.Model):
     def __str__(self):
         return self.text[:COUNT_SYMBOL]
 
+
 class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',#тестировал с трууниками и их выкинул пока что
+        related_name='follower',
     )
     author = models.ForeignKey(
         User,

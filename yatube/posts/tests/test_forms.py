@@ -8,8 +8,8 @@ from django.conf import settings
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
-from posts.models import Follow, Comment, Group, Post 
-from ..forms import PostForm, CommentForm
+from posts.models import Follow, Comment, Group, Post
+from ..forms import PostForm
 
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
@@ -56,7 +56,7 @@ class PostURLTests(TestCase):
         )
         cls.uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=cls.small_gif, #cls
+            content=cls.small_gif,
             content_type='image/gif'
         )
         cls.post = Post.objects.create(
@@ -66,7 +66,7 @@ class PostURLTests(TestCase):
             image=cls.uploaded
         )
         cls.form = PostForm()
-    
+
     @classmethod
     def tearDownClass(cls):
         super().tearDownClass()
@@ -162,7 +162,7 @@ class PostURLTests(TestCase):
 
         response = self.authorized_client.get(
             reverse('posts:index'),
-            data = form_data,
+            data=form_data,
             follow=True
         )
         context_profile_image = response.context.get('posts')[0].image
@@ -171,7 +171,7 @@ class PostURLTests(TestCase):
 
         response = self.authorized_client.get(
             reverse('posts:profile', kwargs={'username': self.author}),
-            data = form_data,
+            data=form_data,
             follow=True
         )
         context_profile_image = response.context.get('page_obj')[0].image
@@ -180,7 +180,7 @@ class PostURLTests(TestCase):
 
         response = self.authorized_client.get(
             reverse('posts:group_list', kwargs={'slug': self.group.slug}),
-            data = form_data,
+            data=form_data,
             follow=True
         )
         context_profile_image = response.context.get('posts')[0].image
@@ -189,7 +189,7 @@ class PostURLTests(TestCase):
 
         response = self.authorized_client.get(
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}),
-            data = form_data,
+            data=form_data,
             follow=True
         )
         context_profile_image = response.context.get('post').image
@@ -202,9 +202,9 @@ class PostURLTests(TestCase):
                 author=self.author,
                 group=self.group,
                 image='posts/small.gif'
-                ).exists()
+            ).exists()
         )
-    
+
     def test_comment_guest_client(self):
         """Неавторизованный пользователь не может комментировать посты."""
         try_comment = {
@@ -217,8 +217,8 @@ class PostURLTests(TestCase):
             follow=True,
         )
         self.assertRedirects(response,
-                             f'/auth/login/?next=/posts/{self.post.id}/comment/')
-    
+            f'/auth/login/?next=/posts/{self.post.id}/comment/')
+
     def test_comment(self):
         """Комментарии создается и появляется на странице поста"""
         comment_count = Comment.objects.count()
@@ -227,15 +227,17 @@ class PostURLTests(TestCase):
             'author': self.author_2,
         }
         response = self.authorized_client_2.post(
-            reverse('posts:add_comment', kwargs={'post_id':self.post.id}),
-            data = form_data,
+            reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
+            data=form_data,
             follow=True
         )
         self.assertEqual(Comment.objects.count(), comment_count + 1)
-        self.assertRedirects(response, reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
+        self.assertRedirects(response,
+            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
         self.assertTrue(Comment.objects.filter(
-                text='atyatya',
-                author=self.author_2,)
+            text='atyatya', 
+            author=self.author_2,
+            )
         )
 
     def test_follow_and_unfollow(self):
@@ -263,5 +265,3 @@ class PostURLTests(TestCase):
         response = self.authorized_client_3.get(reverse('posts:follow_index'))
         post_text = response.context.get('page_obj')
         self.assertNotIn(new_post, post_text)
-
-

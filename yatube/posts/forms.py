@@ -14,6 +14,7 @@ class PostForm(forms.ModelForm):
             raise ValidationError('напишите текст поста')
         return data
 
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment

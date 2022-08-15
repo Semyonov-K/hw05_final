@@ -45,7 +45,7 @@ class PostURLTests(TestCase):
 
     def test_profile_username_url_for_all(self):
         """Страница profile/username доступна любому пользователю."""
-        response = self.guest_client.get(f'/profile/UserTest/')
+        response = self.guest_client.get('/profile/UserTest/')
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_posts_post_id_username_url_for_all(self):
