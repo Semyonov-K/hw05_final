@@ -50,7 +50,7 @@ class Comment(models.Model):
                                on_delete=models.CASCADE,
                                related_name='comments',
                                )
-    post = models.ForeignKey(Post, 
+    post = models.ForeignKey(Post,
                              on_delete=models.CASCADE,
                              related_name='comments',
                              )
