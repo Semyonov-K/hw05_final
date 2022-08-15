@@ -216,8 +216,10 @@ class PostURLTests(TestCase):
             data=try_comment,
             follow=True,
         )
-        self.assertRedirects(response,
-            f'/auth/login/?next=/posts/{self.post.id}/comment/')
+        self.assertRedirects(
+            response,
+            f'/auth/login/?next=/posts/{self.post.id}/comment/'
+        )
 
     def test_comment(self):
         """Комментарии создается и появляется на странице поста"""
@@ -232,12 +234,15 @@ class PostURLTests(TestCase):
             follow=True
         )
         self.assertEqual(Comment.objects.count(), comment_count + 1)
-        self.assertRedirects(response,
-            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
-        self.assertTrue(Comment.objects.filter(
-            text='atyatya', 
-            author=self.author_2,
+        self.assertRedirects(
+            response,
+            reverse('posts:post_detail',
+            kwargs={'post_id': self.post.id}
             )
+        )
+        self.assertTrue(Comment.objects.filter(
+            text='atyatya',
+            author=self.author_2,)
         )
 
     def test_follow_and_unfollow(self):
