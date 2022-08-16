@@ -4,7 +4,6 @@ from django.urls import reverse
 from django import forms
 
 from posts.models import Group, Post
-from ..forms import CommentForm
 
 User = get_user_model()
 
