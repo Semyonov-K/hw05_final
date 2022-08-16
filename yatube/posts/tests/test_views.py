@@ -154,8 +154,3 @@ class PostURLTests(TestCase):
             with self.subTest(value=value):
                 form_field = response.context['form'].fields[value]
                 self.assertIsInstance(form_field, expected)
-
-    def test_comment(self):
-        response = self.authorized_client.get(
-            reverse('posts:post_detail', kwargs={'post_id': self.post.id}))
-        self.assertEqual(response.context['form'], CommentForm)
