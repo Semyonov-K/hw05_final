@@ -1,14 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
+from core.models import CreatedModel
 
 User = get_user_model()
 COUNT_SYMBOL = 15
 
 
-class Post(models.Model):
+class Post(CreatedModel):
     text = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -43,9 +43,8 @@ class Group(models.Model):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(CreatedModel):
     text = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User,
                                on_delete=models.CASCADE,
                                related_name='comments',
@@ -73,3 +72,13 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'author'),
+                name="unique followers"),
+            models.CheckConstraint(
+                check=~models.Q(user=models.F('author')),
+                name='do not selffollow'),
+        ]
